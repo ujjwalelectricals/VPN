@@ -5,7 +5,15 @@ on:
   pull_request:
 
 jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Secret scan
+        run: bash scripts/security-check.sh
+
   test:
+    needs: security
     strategy:
       fail-fast: false
       matrix:
