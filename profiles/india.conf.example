@@ -1,4 +1,4 @@
-# Copy this file to profiles/india.conf and fill in real keys/addresses.
+# Copy to profiles/india.conf and fill in real keys/addresses.
 # Never commit a real PrivateKey to GitHub.
 [Interface]
 PrivateKey = YOUR_CLIENT_PRIVATE_KEY
@@ -7,6 +7,7 @@ DNS = 1.1.1.1, 1.0.0.1
 
 [Peer]
 PublicKey = YOUR_SERVER_PUBLIC_KEY
-AllowedIPs = 0.0.0.0/0, ::/0
+# Full IPv4 tunnel. Add , ::/0 only after the server has working IPv6 forwarding/NAT.
+AllowedIPs = 0.0.0.0/0
 Endpoint = YOUR_SERVER_IP:51820
 PersistentKeepalive = 25
