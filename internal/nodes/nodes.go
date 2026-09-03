@@ -15,6 +15,7 @@ func Load(root string) ([]model.Node, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	var nodes []model.Node
 	if err := json.Unmarshal(data, &nodes); err != nil {
 		return nil, fmt.Errorf("decode nodes.json: %w", err)
@@ -24,9 +25,13 @@ func Load(root string) ([]model.Node, error) {
 
 func Find(root, id string) (model.Node, error) {
 	ns, err := Load(root)
-	if err != nil { return model.Node{}, err }
+	if err != nil {
+		return model.Node{}, err
+	}
 	for _, n := range ns {
-		if n.ID == id { return n, nil }
+		if n.ID == id {
+			return n, nil
+		}
 	}
 	return model.Node{}, fmt.Errorf("node %q not found", id)
 }
