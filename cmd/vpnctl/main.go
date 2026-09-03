@@ -78,17 +78,26 @@ func cmdList(root string) {
 	}
 }
 
-func cmdConnect(root, id string) {
-	n, err := nodes.Find(root, id)
+func connectNode(root string, nID string) error {
+	n, err := nodes.Find(root, nID)
 	if err != nil {
-		fatal(err.Error())
+		return err
 	}
 	if !n.Enabled {
-		fatal("node is disabled; add a valid WireGuard configuration before connecting")
+		return fmt.Errorf("node is disabled; add a valid WireGuard configuration before connecting")
 	}
-	if err := wireguard.InstallAndStart(root, n); err != nil {
+	cfg := filepath.Join(root, n.Config)
+	if err := nodes.ValidateProfile(cfg); err != nil {
+		return fmt.Errorf("invalid profile for %s: %w", n.ID, err)
+	}
+	return wireguard.InstallAndStart(root, n)
+}
+
+func cmdConnect(root, id string) {
+	if err := connectNode(root, id); err != nil {
 		fatal(err.Error())
 	}
+	n, _ := nodes.Find(root, id)
 	fmt.Printf("Connected to %s (%s, %s).\n", n.Name, n.City, n.Country)
 }
 
@@ -157,20 +166,11 @@ func cmdDashboard(root string) {
 			http.Error(w, "missing id", http.StatusBadRequest)
 			return
 		}
-		n, err := nodes.Find(root, id)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
-		if !n.Enabled {
-			http.Error(w, "node is disabled", http.StatusConflict)
-			return
-		}
-		if err := wireguard.InstallAndStart(root, n); err != nil {
+		if err := connectNode(root, id); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		writeJSON(w, map[string]any{"ok": true, "message": "connected", "node": n.ID})
+		writeJSON(w, map[string]any{"ok": true, "message": "connected", "node": id})
 	})
 	mux.HandleFunc("/api/disconnect", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
