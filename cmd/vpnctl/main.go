@@ -14,10 +14,18 @@ import (
 )
 
 func repoRoot() string {
-	exe, err := os.Executable()
-	if err == nil {
-		if p := filepath.Clean(filepath.Join(filepath.Dir(exe), "..", "..")); fileExists(filepath.Join(p, "nodes.json")) {
-			return p
+	candidates := []string{}
+	if exe, err := os.Executable(); err == nil {
+		dir := filepath.Dir(exe)
+		candidates = append(candidates, dir, filepath.Dir(dir), filepath.Dir(filepath.Dir(dir)))
+	}
+	if cwd, err := os.Getwd(); err == nil {
+		candidates = append(candidates, cwd)
+	}
+	for _, candidate := range candidates {
+		candidate = filepath.Clean(candidate)
+		if fileExists(filepath.Join(candidate, "nodes.json")) {
+			return candidate
 		}
 	}
 	cwd, _ := os.Getwd()
