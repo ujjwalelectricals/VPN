@@ -1,0 +1,15 @@
+# Local secrets and generated VPN material
+profiles/*.conf
+!profiles/*.conf.example
+
+# Local binaries / build output
+vpnctl.exe
+vpnctl
+bin/
+dist/
+
+# Editor / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
