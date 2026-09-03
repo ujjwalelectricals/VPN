@@ -1,0 +1,29 @@
+[
+  {
+    "id": "india",
+    "country": "India",
+    "city": "Your server",
+    "name": "India Exit",
+    "config": "profiles/india.conf",
+    "endpoint": "YOUR_SERVER_IP:51820",
+    "enabled": false
+  },
+  {
+    "id": "usa",
+    "country": "United States",
+    "city": "Your server",
+    "name": "USA Exit",
+    "config": "profiles/usa.conf",
+    "endpoint": "YOUR_SERVER_IP:51820",
+    "enabled": false
+  },
+  {
+    "id": "germany",
+    "country": "Germany",
+    "city": "Your server",
+    "name": "Germany Exit",
+    "config": "profiles/germany.conf",
+    "endpoint": "YOUR_SERVER_IP:51820",
+    "enabled": false
+  }
+]
